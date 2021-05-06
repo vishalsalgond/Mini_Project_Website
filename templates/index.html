@@ -1,0 +1,114 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link href="https://fonts.googleapis.com/css2?family=Hammersmith+One&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css" integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm" crossorigin="anonymous">
+    <link rel="preconnect" href="https://fonts.gstatic.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com">
+<link href="https://fonts.googleapis.com/css2?family=Comfortaa:wght@400;700&display=swap" rel="stylesheet">
+    <title>Home Page</title>
+    <style>
+        body {
+            background-color: #2B0361;
+            color: white;
+            font-family: 'Comfortaa', cursive;
+        }
+        /* .btn{
+            -webkit-border-radius: 10;
+            -moz-border-radius: 10;
+            border-radius: 10px;
+            color: #000000;
+            font-size: 23px;
+            padding: 11px;
+            background: #fff700;
+            text-decoration: none;
+        } 
+        .btn:hover {
+            background: #00ff09;
+            text-decoration: none;
+        }*/
+    </style>
+</head>
+<body>
+
+    <div class="container my-5 text-center">
+        <h1 class="mb-5 font-weight-bold">Gesture Talk - Sign Language Detection</h1>
+        
+        {% if cameraStarted == False %}
+        <div class = "row">
+            <div class = "col-lg-8">
+                <img src="{% static 'camera/dummy.jpg' %}"  class="img-thumbnail">
+            </div>
+            <div class = "col-lg-4">
+                <div class="alert alert-primary" role="alert">
+                    Please press the Turn On button to start prediction of sign language.
+                </div>
+                <h3 class="mt-5 text-warning"> Predicted Character</h3> 
+                <p id="displayCharacter">None</id>
+
+                <h3 class="mt-5 text-success"> Predicted String</h3> 
+                <p id="displayString">None</id>
+                
+                <form action='/' method='POST'>
+                    {% csrf_token %}
+                    <button class='btn btn-lg btn-primary mt-5' name='btn' id='btn'>Turn On</button>
+                </form>
+                
+            </div>
+        </div>
+        {% else %}
+        <div class = "row">
+            <div class = "col-lg-8">
+                <img class="img-thumbnail" src="{% url 'video_feed' %}">
+            </div>
+            <div class = "col-lg-4">
+                <div class="alert alert-primary" role="alert">
+                    Please hold your hand inside the green box.
+                </div>
+                <h3 class="mt-5 text-warning"> Predicted Character</h3> 
+                <p id="displayCharacter"></id>
+
+                <h3 class="mt-5 text-success"> Predicted String</h3> 
+                <p id="displayString"></id>
+
+                <form action='/' method='POST'>
+                    {% csrf_token %}
+                    <button class='btn btn-lg btn-primary mt-5' name='btn' id='btn'>Turn Off</button>
+                </form>
+            </div>
+        </div>
+        {% endif %}
+    </div>
+    
+    
+    <script src="https://code.jquery.com/jquery-3.6.0.js" integrity="sha256-H+K7U5CnXl1h5ywQfKtSj8PCmoN9aaq30gDh27Xc0jk=" crossorigin="anonymous"></script>
+    
+    {% if cameraStarted %}
+    <script>
+        $(document).ready(function() {
+            setInterval(function() {
+                $.ajax({
+                    type: 'GET',
+                    url: "{% url 'getPredictions' %}",
+                    success: function(response) {
+                        document.getElementById("displayCharacter").innerHTML = response.predictedCharacter
+                        document.getElementById("displayString").innerHTML = response.predictedString
+                    },
+                    error: function(response) {
+                        console.log('No data found');
+                    }
+                });
+
+            }, 1000);
+        });
+    </script>
+    {% endif %}
+    
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.12.9/umd/popper.min.js" integrity="sha384-ApNbgh9B+Y1QKtv3Rn7W3mgPxhU9K/ScQsAP7hUibX39j7fakFPskvXusvfa0b4Q" crossorigin="anonymous"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.min.js" integrity="sha384-JZR6Spejh4U02d8jOt6vLEHfe/JQGiRRSQQxSfFWpi1MquVdAyjUar5+76PVCmYl" crossorigin="anonymous"></script>
+</body>
+</html>
