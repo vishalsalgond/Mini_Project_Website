@@ -26,7 +26,7 @@ SECRET_KEY = '(_*f+z2usrbcs@fpwbxo)l330vf&t1=+nm1y#md!!+)cx3p)el'
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = False
 
-ALLOWED_HOSTS = ['https://sign-lang-detection.herokuapp.com/']
+ALLOWED_HOSTS = ['sign-lang-detection.herokuapp.com']
 
 
 # Application definition
